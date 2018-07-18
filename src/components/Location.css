@@ -1,0 +1,54 @@
+li {
+    display: inline-block;
+    margin: 20px;
+    padding: 5px 15px 10px 15px;
+    vertical-align: middle;
+    width: 380px;
+    height: 230px;
+    box-shadow:
+            0 2px 2px 0 rgba(0,0,0,.14),
+            0 3px 1px -2px rgba(0,0,0,.2),
+            0 1px 5px 0 rgba(0,0,0,.12);
+}
+
+@keyframes trumb {
+    0% {transform: rotate(0deg);}
+    25% {transform: rotate(2deg);}
+    50% {transform: rotate(-2deg);}
+    75% {transform: rotate(2deg);}
+    100% {transform: rotate(0deg);}
+}
+
+li:hover {
+    cursor: pointer;
+    animation-name: trumb;
+    animation-duration: 1s;
+}
+
+h5.location {
+    padding: 5px;
+    border: solid 1px;
+}
+
+p.latitude {
+    color: #fb165f;
+}
+
+p.longitude {
+    color: #1c5ab0;
+}
+
+div.close-btn {
+    width: 20px;
+    height: 20px;
+    margin: -5px -15px 0 0;
+    background-image: url("../img/baseline-close-24px.svg");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-color: #fb165f;
+    float: right;
+    box-shadow:
+            0 2px 2px 0 rgba(0,0,0,.14),
+            0 3px 1px -2px rgba(0,0,0,.2),
+            0 1px 5px 0 rgba(0,0,0,.12);
+}
