@@ -8,6 +8,7 @@ class LocationSearchInput extends React.Component {
   constructor(props) {
     super(props);
     this.state = { ...props, address: '' };
+    this.id = 1;
   }
 
   handleChange = address => {
@@ -21,6 +22,7 @@ class LocationSearchInput extends React.Component {
         return getLatLng(results[0])
       }).then(latLng => {
         this.state.addLocation({
+          id: this.id++,
           name: this.name,
           latLng: latLng
         });

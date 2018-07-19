@@ -41,11 +41,12 @@ class App extends Component {
   }
 
   removeLocation(e) {
-    const name = e.target.nextSibling.innerText;
+    const id = parseInt(e.target.parentNode.getAttribute('id').split('location')[1]);
     const { locationList } = this.state;
+
     this.setState({
       locationList: locationList.filter(location => {
-        return location.name !== name;
+        return location.id !== id;
       })
     });
   }
@@ -97,7 +98,7 @@ class App extends Component {
   render() {
     const locations = this.state.locationList.map((location, i) => {
       return (
-        <li key={i}>
+        <li key={i} id={`location${location.id}`}>
           <div className="close-btn" onClick={this.removeLocation}> </div>
           <h5 className="location"><strong>{location.name}</strong></h5>
           <p className="latitude">Latitude(위도): <strong>{location.latLng.lat}</strong></p>
