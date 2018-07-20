@@ -113,7 +113,7 @@ class App extends Component {
 
     const MapWithAMarker = withGoogleMap(props =>
       <GoogleMap
-        defaultZoom={8}
+        defaultZoom={12}
         defaultCenter={{ lat: this.state.lat, lng: this.state.lng }}
       >
         <Marker
