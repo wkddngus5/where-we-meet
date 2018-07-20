@@ -1,4 +1,4 @@
-li {
+li.location {
     display: inline-block;
     margin: 20px 10px 20px 10px;
     padding: 5px 15px 10px 15px;
@@ -20,7 +20,7 @@ li {
     100% {transform: rotate(0deg);}
 }
 
-li:hover {
+li.location:hover {
     cursor: pointer;
     animation-name: trumb;
     animation-duration: 1s;

@@ -4,15 +4,17 @@ import './App.css';
 
 import LocationSearchInput from './components/LocationSearchInput';
 import Location from './components/Location';
+import History from './components/History';
 
 class App extends Component {
   constructor() {
     super();
     this.state = {
       locationList: [],
-      lat: -34.397,
-      lng: 150.644,
-      info: 'test'
+      lat: 37.579,
+      lng: 126.977,
+      info: 'select location',
+      historyList: JSON.parse(localStorage.getItem('locationList'))
     };
 
     this.findLocationIndex = function getRemoveIndex(name, locationList) {
@@ -23,15 +25,15 @@ class App extends Component {
       });
     };
 
+    this.historyId = 1;
+
     this.addLocation = this.addLocation.bind(this);
     this.removeLocation = this.removeLocation.bind(this);
     this.moveLocation = this.moveLocation.bind(this);
     this.showLocationOnMap = this.showLocationOnMap.bind(this);
     this.showResult = this.showResult.bind(this);
-  }
-
-  componentDidUpdate() {
-    // console.log(this.state.locationList);
+    this.selectHistory = this.selectHistory.bind(this);
+    this.storeLocation = this.storeLocation.bind(this);
   }
 
   addLocation(location) {
@@ -95,10 +97,51 @@ class App extends Component {
     });
   }
 
+  storeLocation(location) {
+    const locationList = this.state.historyList.filter(history => {
+      return history.name !== location.name;
+    });
+
+    if(locationList.length > 20) {
+      locationList.remove(0);
+    };
+
+    locationList.push(location);
+    localStorage.setItem('locationList', JSON.stringify(locationList));
+    this.setState({
+      historyList: locationList
+    });
+  }
+
+  toggleHistory() {
+    const historyList = document.querySelector('ul.history-list');
+    const dim = document.querySelector('div.dim');
+
+    if(historyList.classList.contains('is-visible')) {
+      historyList.classList.remove('is-visible');
+      dim.classList.remove('transparency');
+      return;
+    }
+    historyList.classList.add('is-visible');
+    dim.classList.add('transparency');
+  }
+
+  selectHistory(e) {
+    const name = e.target.innerText;
+    const result = JSON.parse(localStorage.getItem('locationList')).filter(location => {
+      return location.name === name;
+    })[0];
+
+    this.storeLocation(result);
+    result.id = `H-${this.historyId++}`;
+    this.addLocation(result);
+    this.toggleHistory();
+  }
+
   render() {
     const locations = this.state.locationList.map((location, i) => {
       return (
-        <li key={i} id={`location${location.id}`}>
+        <li className="location" key={i} id={`location${location.id}`}>
           <div className="close-btn" onClick={this.removeLocation}> </div>
           <h5 className="location"><strong>{location.name}</strong></h5>
           <p className="latitude">Latitude(위도): <strong>{location.latLng.lat}</strong></p>
@@ -129,18 +172,20 @@ class App extends Component {
             <div className="mdl-layout__header-row">
               <a href="/"><span className="mdl-layout-title">Where_We_Meet</span></a>
               <div className="mdl-layout-spacer"></div>
+              <History onClick={this.toggleHistory} historyList={this.state.historyList} selectHistory={this.selectHistory}/>
             </div>
           </header>
           <main className="mdl-layout__content">
             <div className="page-content" id="locationSearchZone">
-              <LocationSearchInput addLocation={this.addLocation}/>
+
+              <LocationSearchInput addLocation={this.addLocation} storeLocation={this.storeLocation}/>
             </div>
             <div className="page-content" id="locationListZone">
               <ul className="location-list">
                 {locations}
               </ul>
             </div>
-            <div className="dim"></div>
+            <div className="dim" onClick={this.toggleHistory}></div>
             <div className="modal">
               <h4>{this.state.info}</h4>
               <MapWithAMarker

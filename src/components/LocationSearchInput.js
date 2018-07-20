@@ -9,6 +9,9 @@ class LocationSearchInput extends React.Component {
     super(props);
     this.state = { ...props, address: '' };
     this.id = 1;
+    if(!Array.isArray(JSON.parse(localStorage.getItem('locationList')))) {
+      localStorage.setItem('locationList', JSON.stringify([]));
+    }
   }
 
   handleChange = address => {
@@ -29,10 +32,17 @@ class LocationSearchInput extends React.Component {
         this.setState({
           address: ''
         });
+
+        this.state.storeLocation({
+          name: this.name,
+          latLng: latLng
+        });
+
       }).catch(error => {
         console.error('Error', error)
     });
   };
+
 
   render() {
     return (
