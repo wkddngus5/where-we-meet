@@ -8,7 +8,7 @@ class LocationSearchInput extends React.Component {
   constructor(props) {
     super(props);
     this.state = { ...props, address: '' };
-    this.id = 1;
+    this.id = 0;
     if(!Array.isArray(JSON.parse(localStorage.getItem('locationList')))) {
       localStorage.setItem('locationList', JSON.stringify([]));
     }
@@ -19,13 +19,15 @@ class LocationSearchInput extends React.Component {
   };
 
   handleSelect = address => {
+    const { locationList } = this.props;
+
     geocodeByAddress(address)
       .then(results => {
         this.name = results[0].formatted_address;
         return getLatLng(results[0])
       }).then(latLng => {
         this.state.addLocation({
-          id: this.id++,
+          id: locationList.length,
           name: this.name,
           latLng: latLng
         });

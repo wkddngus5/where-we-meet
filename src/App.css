@@ -59,7 +59,7 @@ div.page-content {
 
 .modal {
   width: 90%;
-  top: 10%;
+  top: 70px;
   left: 5%;
   z-index: 10;
   position: fixed;
@@ -72,6 +72,10 @@ div.page-content {
 
 .modal.is-visible {
   display: block;
+}
+
+div.mapContainer {
+    height: 65vh;
 }
 
 h4 {

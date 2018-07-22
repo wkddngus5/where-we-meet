@@ -6,22 +6,23 @@ import './History.css';
 class History extends Component {
   constructor(props) {
     super(props);
-    this.state = {...props};
   }
 
   render() {
-    const historyList = this.state.historyList.map((history, i) => {
+    const { historyList , selectHistory, onClick } = this.props;
+
+    const historyListComponents = historyList.map((history, i) => {
       const name = history.name;
       return (
-        <li className="history" key={i} onClick={this.state.selectHistory}>{name}</li>
+        <li className="history" key={i} onClick={selectHistory}>{name}</li>
       );
     }).reverse();
 
     return (
       <div className="history-zone">
-        <img className="history-btn" src={historyImg} onClick={this.state.onClick}/>
+        <img className="history-btn" src={historyImg} onClick={onClick}/>
         <ul className="history-list">
-          {historyList}
+          {historyListComponents}
         </ul>
       </div>
     )

@@ -25,8 +25,6 @@ class App extends Component {
       });
     };
 
-    this.historyId = 1;
-
     this.addLocation = this.addLocation.bind(this);
     this.removeLocation = this.removeLocation.bind(this);
     this.moveLocation = this.moveLocation.bind(this);
@@ -45,7 +43,6 @@ class App extends Component {
   removeLocation(e) {
     const id = parseInt(e.target.parentNode.getAttribute('id').split('location')[1]);
     const { locationList } = this.state;
-
     this.setState({
       locationList: locationList.filter(location => {
         return location.id !== id;
@@ -61,7 +58,6 @@ class App extends Component {
     this.setState({
       info: `${name}(${lat}, ${lng})`
     });
-    console.log(lat, lng);
     this.moveLocation(lat, lng);
   }
 
@@ -81,11 +77,6 @@ class App extends Component {
       info: `입력하신 위치들의 중간지점은 (${latResult}, ${lngResult})입니다.`
     });
     this.moveLocation(latResult, lngResult);
-  }
-
-  closeMap() {
-    document.querySelector('div.modal').classList.remove('is-visible');
-    document.querySelector('div.dim').classList.remove('is-visible');
   }
 
   moveLocation(lat, lng) {
@@ -126,6 +117,17 @@ class App extends Component {
     dim.classList.add('transparency');
   }
 
+  closeDim() {
+    const dim = document.querySelector('div.dim');
+    const historyList = document.querySelector('ul.history-list');
+    const modal = document.querySelector('div.modal');
+
+    dim.classList.remove('is-visible');
+    dim.classList.remove('transparency');
+    historyList.classList.remove('is-visible');
+    modal.classList.remove('is-visible');
+  }
+
   selectHistory(e) {
     const name = e.target.innerText;
     const result = JSON.parse(localStorage.getItem('locationList')).filter(location => {
@@ -133,7 +135,7 @@ class App extends Component {
     })[0];
 
     this.storeLocation(result);
-    result.id = `H-${this.historyId++}`;
+    result.id = this.state.locationList.length;
     this.addLocation(result);
     this.toggleHistory();
   }
@@ -141,16 +143,9 @@ class App extends Component {
   render() {
     const locations = this.state.locationList.map((location, i) => {
       return (
-        <li className="location" key={i} id={`location${location.id}`}>
-          <div className="close-btn" onClick={this.removeLocation}> </div>
-          <h5 className="location"><strong>{location.name}</strong></h5>
-          <p className="latitude">Latitude(위도): <strong>{location.latLng.lat}</strong></p>
-          <p className="longitude">Longitude(경도): <strong>{location.latLng.lng}</strong></p>
-          <button className="mdl-button mdl-js-button mdl-js-ripple-effect" onClick={this.showLocationOnMap}>
-            지도 보기
-          </button>
-        </li>
-        // <Location id={i} key={i} location={location} removeLocation={this.removeLocation}/>
+        <Location id={`location${i}`} key={i} location={location}
+                  removeLocation={this.removeLocation}
+                  showLocationOnMap={this.showLocationOnMap}/>
       )
     });
 
@@ -177,25 +172,24 @@ class App extends Component {
           </header>
           <main className="mdl-layout__content">
             <div className="page-content" id="locationSearchZone">
-
-              <LocationSearchInput addLocation={this.addLocation} storeLocation={this.storeLocation}/>
+              <LocationSearchInput addLocation={this.addLocation} storeLocation={this.storeLocation} locationList={this.state.locationList}/>
             </div>
             <div className="page-content" id="locationListZone">
               <ul className="location-list">
                 {locations}
               </ul>
             </div>
-            <div className="dim" onClick={this.toggleHistory}></div>
+            <div className="dim" onClick={this.closeDim}></div>
             <div className="modal">
               <h4>{this.state.info}</h4>
               <MapWithAMarker
-                containerElement={<div style={{ height: `400px` }} />}
+                containerElement={<div className="mapContainer" />}
                 mapElement={<div style={{ height: `100%` }} />}
               />
               <button id="close-map"
                       className="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect
                         mdl-button--accent"
-                      onClick={this.closeMap}
+                      onClick={this.closeDim}
               >
                 Close
               </button>
